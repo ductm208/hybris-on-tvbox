@@ -1,6 +1,6 @@
 # Background
 As a software engineer specializing in Java development, particularly in SAP Hybris commerce, I am also learning IoT development as a hobby.<br/><br/>
-Recently, I migrated Home Assistant to new 4GB RAM-equipped TV box. This upgrade has significantly improved the friendliness of Java development due to the ARM architecture of the CPU (where JVM can be run) and importantly it is running on Linux Debian!!!<br/><br/>
+Recently, I migrated Home Assistant to new 4GB RAM-equipped TV box. This upgrade has significantly improved the friendliness of Java development due to the ARM architecture of the CPU (where JVM can be) and importantly it is running on Linux Debian!!!<br/><br/>
 So I decided to reload Debian without installing Home Assistant and tried to install Hybris. Technically, I managed to run a SAP commerce product (a fancy platform) on the cheap entertainment system(US$25) - it is kind of you are owning a Rolls Royce but park it in a motel garage. That means this experiment should be considered as a hobby, to see how much my work can survive in different habitats. We have seen that all enterprise server-side software is hosted on x86(32 and 64) CPU architecture. On the other hand, coding on ARM computers (such as Apple Silicon, Microsoft SQx...) has been progressing relatively slowly.
 
 To start Hybris on this tv box, application server would take 30 mins to be up from minimal extensions setup. Of course we cannot expect it to run as fast as a real computer because it is originally designed to run Android TV system, surviving from 5V power without any heat fan. But please SAP, it would be great if you can collborate with an ARM chip manufacturer to make your own SOC design. I can imagine that one day a ray of 10 tv boxes sitting on the desk can be run as well as SAP commerce cloud CCV2 development enviroments. They would not be as expensive as Azure cloud, wouldn't occupy much space, would work silently, and could be easily scaled up by adding real and cheap devices.
@@ -42,7 +42,7 @@ You might wonder why Armbian has such a huge community, but I chose the devmfc g
   
   ## Software
   ### 1. Get OS installation done
-  Get your installation finish from devfmc or Armbian
+  Get your installation finish from devfmc or Armbian. From my experience, I would like to bring up some important points: 
   > - Installing on SDcard or USB drive should be better than internal storage (eMMC) because you do not need to erase Android on the tvbox - your setup can be plug and play whenever you want. However, running on external storages means sacrificing the performance.
   > - Choosing right external storage is also very important because SoC have some kernel limitations. I also shared 1 topic to help others choose right accessories https://github.com/devmfc/debian-on-amlogic/discussions/48
   > - To boot externally, you have to enter recovery mode. Some devices hide the reset button in the output jack. My Tanix W2 has that button inside the 3.5 video/audio plug.
@@ -87,7 +87,7 @@ You might wonder why Armbian has such a huge community, but I chose the devmfc g
 > If you are the *nix family users (Unix, Linux, MacOS) you might not required to follow exactly my instructions below. However there is a wrapper issue would be arisen when you try to start hybris server. If this happens, please search for the wrapper hacks section.
 
 ## Install Java JDK 17
-At SSH using tvbox account, enter:<br/>
+At SSH using root account, enter:<br/>
 `# apt install openjdk-17-jdk`
 ![image](https://github.com/ductm208/hybris-on-tvbox/assets/4532530/d5a4bea8-3764-49ab-9af5-74cf069b19b4)
 
@@ -97,9 +97,9 @@ If thing goes well <br/>
 
 ## Create hybris user
 
-> You can use tvbox (which is root) to bypass creating hybris user. I just want to share the best practice of <i>not to use root account to run application to avoid security vulnebilities</i>
+> You can use root to bypass creating hybris user. I just want to share the best practice of <i>not to use root account to run application to avoid security vulnebilities</i>
 
-Run command from tvbox account to create hybris user<br/>
+Run command as root to create hybris user<br/>
 `# useradd -m hybris`<br/> <br/>
 Run set password<br/>
 `# passwd hybris`<br/> <br/>
@@ -159,7 +159,7 @@ Run ant clean all again, my tv box took 24 minutes to finish building<br/>
 `hybris@tvbox:~/hybrisapp/hybris/bin/platform$ ant clean all`<br/>
 ![image](https://github.com/ductm208/hybris-on-tvbox/assets/4532530/f9a1e568-3329-43e0-b6b7-b138139953a4)<br/><br/>
 
-Now you can run ant initialize and make some :coffee: 😄, it would take 1-2hrs to complete - actually not bad because my Ubuntu on Thinkpad P1 takes 10 minutes for the same task<br/>
+Now you can run ant initialize and make some :coffee: 😄, it would take 1-2hrs to complete - actually not bad because Thinkpad P1 which installed Ubuntu takes 10 minutes for the same task<br/>
 `hybris@tvbox:~/hybrisapp/hybris/bin/platform$ ant initialize`<br/>
 
 ## Start the server
@@ -167,15 +167,15 @@ Now this is time to bring the wrapper hack, if you try to run
 `hybris@tvbox:~/hybrisapp/hybris/bin/platform$ ./hybrisserver.sh debug` you would get something like this <br/>
 ![image](https://github.com/ductm208/hybris-on-tvbox/assets/4532530/54186f1d-0678-4a93-88ee-f3ae1570b2aa)<br/>
 It seems hybrisserver.sh is trying to find the wrapper for aarch64 but this architecture profile is not there.<br/>
-Types the command below we will see: The wrapper for Linux is around for different CPU architectures but none of them is aarch64<br>
+Type the command below we will see: The wrappers for Linux are around for different CPU architectures but none of them is aarch64<br>
 `hybris@tvbox:~/hybrisapp/hybris/bin/platform$ ls /home/hybris/hybrisapp/hybris/bin/platform/tomcat/bin | grep wrapper`
 ![image](https://github.com/ductm208/hybris-on-tvbox/assets/4532530/dfe34d58-e8cf-429a-84f0-60d61920bd9c)<br/><br/>
 
-In fact, aarch64 is arm-64. We need to help the script routed to arm-64 by making the symbolic link. At /home/hybris/hybrisapp/hybris/bin/platform/tomcat/bin type: <br/>
+In fact, aarch64 is arm-64. We need to help the script route to arm-64 by making the symbolic link. At /home/hybris/hybrisapp/hybris/bin/platform/tomcat/bin type: <br/>
 `hybris@tvbox:~/hybrisapp/hybris/bin/platform/tomcat/bin$ ln -s wrapper-linux-arm-64 wrapper-linux-aarch64-` <br/>
 **Be careful, wrapper-linux-aarch64- is ending with dash (-).**. Check again with different command.
 `hybris@tvbox:~/hybrisapp/hybris/bin/platform/tomcat/bin$ ls -l | grep wrapper`<br/>
-You will see the there are symbolic link created and it actually is wrapper-linux-arm-64
+You will see the symbolic link created and it is actually wrapper-linux-arm-64
 
 ![image](https://github.com/ductm208/hybris-on-tvbox/assets/4532530/686ceb28-3cf9-4809-9337-e5f2ce496a5d)<br/><br/>
 
