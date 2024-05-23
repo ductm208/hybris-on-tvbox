@@ -171,7 +171,7 @@ Types the command below we will see: The wrapper for Linux is around for differe
 `hybris@tvbox:~/hybrisapp/hybris/bin/platform$ ls /home/hybris/hybrisapp/hybris/bin/platform/tomcat/bin | grep wrapper`
 ![image](https://github.com/ductm208/hybris-on-tvbox/assets/4532530/dfe34d58-e8cf-429a-84f0-60d61920bd9c)<br/><br/>
 
-Technical aarch64 is arm-64. We can help the script to be routed to arm-64 by making the symbolic link. At /home/hybris/hybrisapp/hybris/bin/platform/tomcat/bin type: <br/>
+In fact, aarch64 is arm-64. We need to help the script routed to arm-64 by making the symbolic link. At /home/hybris/hybrisapp/hybris/bin/platform/tomcat/bin type: <br/>
 `hybris@tvbox:~/hybrisapp/hybris/bin/platform/tomcat/bin$ ln -s wrapper-linux-arm-64 wrapper-linux-aarch64-` <br/>
 **Be careful, wrapper-linux-aarch64- is ending with dash (-).**. Check again with different command.
 `hybris@tvbox:~/hybrisapp/hybris/bin/platform/tomcat/bin$ ls -l | grep wrapper`<br/>
