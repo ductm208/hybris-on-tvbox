@@ -51,7 +51,7 @@ You might wonder why Armbian has such a huge community, but I chose the devmfc g
   WinSCP or any SFTP software if you are using Windows. MacOS or Linux we can use scp command to transfer the file.
   
   ### 3. Get SAP Hybris installtion package
-  I used CXCOMCL221100U_16-70007431.zip which is release 2211 patch 16. However if you have any 2105 or above it should be fine because we are going to install JDK 17. Due to licensing policy I can not share with you the zip file.
+  I used CXCOMCL221100U_19-70007431.zip which is release 2211 patch 19. However if you have any 2105 or above it should be fine because we are going to install JDK 17. Due to licensing policy I can not share with you the zip file.
 
   ### 4. Get localextensions.xml and local.properties from my repo
   It is not neccessarily to get my files. You could have your own definitions.
@@ -90,14 +90,99 @@ At SSH using tvbox account, enter:<br/>
 `# apt install openjdk-17-jdk`
 ![image](https://github.com/ductm208/hybris-on-tvbox/assets/4532530/d5a4bea8-3764-49ab-9af5-74cf069b19b4)
 
-If thing goes well 
+If thing goes well <br/>
 `# java -version`
 ![image](https://github.com/ductm208/hybris-on-tvbox/assets/4532530/3ac4ec4f-4501-486e-b265-9f74f77df614)
 
-
 ## Create hybris user
+
+> You can use tvbox (which is root) to bypass creating hybris user. I just want to share the best practice of <i>not to use root account to run application to avoid security vulnebilities</i>
+
+Run command from tvbox account to create hybris user<br/>
+`# useradd -m hybris`<br/> <br/>
+Run set password<br/>
+`# passwd hybris`<br/> <br/>
+Let assume that password is Hybris123<br/>
+If you run command below you will see /home/hybris created <br/>
+![image](https://github.com/ductm208/hybris-on-tvbox/assets/4532530/d28ae977-c03d-40d4-83ac-6f1d83d07bf4)
+Open another terminal from client, try to access with hybris/Hybris123 to make sure you can access SSH:<br/>
+`$ ssh hybris@192.168.1.220`
+
+![image](https://github.com/ductm208/hybris-on-tvbox/assets/4532530/5f49c5fc-771b-482d-98f8-809966d20ec3)
+
+
 ## Copy installation package to tv box
-## Compile + run + intialize the system
-> ```
->This is the code
-> ```
+### *uix users
+If you can use scp command from your client, I placed Hybris package zip in Downloads<br/>
+`ductran@DucTran:~$ scp ~/Downloads/CXCOMCL221100U_19-70007431.ZIP hybris@192.168.1.220:/home/hybris`
+![image](https://github.com/ductm208/hybris-on-tvbox/assets/4532530/e53027de-82f3-4f26-bee8-a126b858d42f) <br/>
+scp will ask password and then copy the file from your client and place into tv box as in /home/hybris/ <br/>
+
+### Windows users
+You can use any FTP file uploader, url would be sftp://hybris@192.168.1.220 <br/>
+
+--------
+
+
+Switch back to terminal window accessed with hybris account and type: <br/>
+`hybris@tvbox:~$ ls /home/hybris` <br/> <br/>
+Ideally file should be up here<br/>
+![image](https://github.com/ductm208/hybris-on-tvbox/assets/4532530/b4d3aaf7-761b-4930-85cf-2711421e9ef9) <br/>
+Now we need to create /home/hybris/hybrisapp folder<br/>
+`hybris@tvbox:~$ mkdir /home/hybris/hybrisapp` <br/> <br/>
+Unzip the file by command (2 mins eta):<br/>
+`hybris@tvbox:~$ unzip CXCOMCL221100U_19-70007431.ZIP -d hybrisapp` <br/><br/>
+
+Run this command, "README, SIGNATURE.SMF..." should be located in hybris app<br/>
+`hybris@tvbox:~$ ls /home/hybris/hybrisapp`<br/>
+![image](https://github.com/ductm208/hybris-on-tvbox/assets/4532530/d6f64a0d-06d4-4d84-b41c-9033c3e8f19d)
+
+## Compile + intialize + run the system
+Now we can do all stuffs as normal SAP Hybris commerce consultant do except small hack from wrapper. HYBRIS_HOME is /home/hybris/hybrisapp/hybris
+### Compile the package
+Set ant environment values<br/>
+`hybris@tvbox:~/hybrisapp/hybris/bin/platform$ . ./setantenv.sh`<br/><br/>
+Run ant clean all as usual<br/>
+`hybris@tvbox:~/hybrisapp/hybris/bin/platform$ ant clean all`<br/><br/>
+It will ask to create config folder, just enter to create develop profile
+![image](https://github.com/ductm208/hybris-on-tvbox/assets/4532530/c3ef2513-dee9-4ddb-af7f-5b4c10a276cf)<br/>
+It would take few minutes to create all stuffs but we need only config folder, ant build would be performed again later. As soon as config folder create you can terminate the command by Ctrl + C.<br/>
+Now you need to replace newly created local.properties and localextensions.xml. Those files are nothing special, they contains minimal setup.
+
+On *nix you just run from client<br/>
+`ductran@DucTran:~$ scp ~/Downloads/local.properties hybris@192.168.1.220:/home/hybris/hybrisapp/hybris/config`<br/>
+`ductran@DucTran:~$ scp ~/Downloads/localextensions.xml hybris@192.168.1.220:/home/hybris/hybrisapp/hybris/config`<br/><br/>
+On Windows, just drop 2 files to /home/hybris/hybrisapp/hybris/config<br/>
+
+Run ant clean all again, my tv box took 24 minutes to finish building<br/>
+`hybris@tvbox:~/hybrisapp/hybris/bin/platform$ ant clean all`<br/>
+![image](https://github.com/ductm208/hybris-on-tvbox/assets/4532530/f9a1e568-3329-43e0-b6b7-b138139953a4)<br/><br/>
+
+Now you can run ant initialize and make some :coffee: 😄, it would take 1-2hrs to complete - actually not bad because my Ubuntu on Thinkpad P1 takes 10 minutes for the same task<br/>
+`hybris@tvbox:~/hybrisapp/hybris/bin/platform$ ant initialize`<br/>
+
+## Start the server
+Now this is time to bring the wrapper hack, if you try to run 
+`hybris@tvbox:~/hybrisapp/hybris/bin/platform$ ./hybrisserver.sh debug` you would get something like this <br/>
+![image](https://github.com/ductm208/hybris-on-tvbox/assets/4532530/54186f1d-0678-4a93-88ee-f3ae1570b2aa)<br/>
+It seems hybrisserver.sh is trying to find the wrapper for aarch64 but this architecture profile is not there.<br/>
+Types the command below we will see: The wrapper for Linux is around for different CPU architectures but none of them is aarch64<br>
+`hybris@tvbox:~/hybrisapp/hybris/bin/platform$ ls /home/hybris/hybrisapp/hybris/bin/platform/tomcat/bin | grep wrapper`
+![image](https://github.com/ductm208/hybris-on-tvbox/assets/4532530/dfe34d58-e8cf-429a-84f0-60d61920bd9c)<br/><br/>
+
+Technical aarch64 is arm-64. We can help the script to be routed to arm-64 by making the symbolic link. At /home/hybris/hybrisapp/hybris/bin/platform/tomcat/bin type: <br/>
+`hybris@tvbox:~/hybrisapp/hybris/bin/platform/tomcat/bin$ ln -s wrapper-linux-arm-64 wrapper-linux-aarch64-` <br/>
+**Be careful, wrapper-linux-aarch64- is ending with dash (-).**. Check again with different command.
+`hybris@tvbox:~/hybrisapp/hybris/bin/platform/tomcat/bin$ ls -l | grep wrapper`<br/>
+You will see the there are symbolic link created and it actually is wrapper-linux-arm-64
+
+![image](https://github.com/ductm208/hybris-on-tvbox/assets/4532530/686ceb28-3cf9-4809-9337-e5f2ce496a5d)<br/><br/>
+
+Now you definitely can run hybris server normally.<br/>
+
+![image](https://github.com/ductm208/hybris-on-tvbox/assets/4532530/ed54e920-8f96-4b1f-a9c5-1a02e91eb1f2) <br/>
+
+It will show aarch64 is taken, and takes around 30 minutes to start.
+
+## Check the result:
+
