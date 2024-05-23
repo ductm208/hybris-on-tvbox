@@ -55,7 +55,8 @@ You might wonder why Armbian has such a huge community, but I chose the devmfc g
 
   ### 4. Get localextensions.xml and local.properties from my repo
   It is not neccessarily to get my files. You could have your own definitions.
-  
+  - https://github.com/ductm208/hybris-on-tvbox/blob/main/localextensions.xml
+  - https://github.com/ductm208/hybris-on-tvbox/blob/main/local.properties
   ### 5. Install terminal to access via SSH
   - Install Putty if you are on Windows.
   ### 6. Make sure you can access through SSH
@@ -182,7 +183,13 @@ Now you definitely can run hybris server normally.<br/>
 
 ![image](https://github.com/ductm208/hybris-on-tvbox/assets/4532530/ed54e920-8f96-4b1f-a9c5-1a02e91eb1f2) <br/>
 
-It will show aarch64 is taken, and takes around 30 minutes to start.
+It will show aarch64 is taken, and takes around 30 minutes to start.<br/>
+
+![image](https://github.com/ductm208/hybris-on-tvbox/assets/4532530/5e578d94-3962-4d38-84e9-14bd7176b8b7)
 
 ## Check the result:
+![image](https://github.com/ductm208/hybris-on-tvbox/assets/4532530/2c95271c-6ba8-46b3-a23c-7ed3d8a81399)<br/><br/>
 
+You can check the storefront from the url: https://192.168.1.220:9002/yacceleratorstorefront/?site=electronics<br>
+And backoffice too: https://192.168.1.220:9002<br>
+Surprisingly, once system is the platform will run well, not slow as I thought.
