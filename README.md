@@ -192,4 +192,4 @@ It will show aarch64 is taken, and takes around 30 minutes to start.<br/>
 
 You can check the storefront from the url: https://192.168.1.220:9002/yacceleratorstorefront/?site=electronics<br>
 And backoffice too: https://192.168.1.220:9002<br>
-Surprisingly, once system is the platform will run well, not slow as I thought.
+Surprisingly, once server is ready the platform will run well, not slow as I thought.
