@@ -147,7 +147,7 @@ Run ant clean all as usual<br/>
 `hybris@tvbox:~/hybrisapp/hybris/bin/platform$ ant clean all`<br/><br/>
 It will ask to create config folder, just enter to create develop profile
 ![image](https://github.com/ductm208/hybris-on-tvbox/assets/4532530/c3ef2513-dee9-4ddb-af7f-5b4c10a276cf)<br/>
-It would take few minutes to create all stuffs but we need only config folder, ant build would be performed again later. As soon as config folder create you can terminate the command by Ctrl + C.<br/>
+It would take few minutes to create all stuffs but we need only config folder, ant build would be performed again later. As soon as config folder created you can terminate the command by Ctrl + C.<br/>
 Now you need to replace newly created local.properties and localextensions.xml. Those files are nothing special, they contains minimal setup.
 
 On *nix you just run from client<br/>
