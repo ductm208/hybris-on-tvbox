@@ -1,6 +1,9 @@
 # Background
 As a software engineer specializing in Java development, particularly in SAP Hybris commerce, I am also learning IoT development as a hobby.<br/><br/>
 Recently, I migrated Home Assistant to new 4GB RAM-equipped TV box. This upgrade has significantly improved the friendliness of Java development due to the ARM architecture of the CPU (where JVM can run on) and importantly it is running on Linux Debian!!!<br/><br/>
+
+![image](https://github.com/ductm208/hybris-on-tvbox/assets/4532530/5fbc8c81-272e-40b7-b344-c0e2238e3035) <br/>
+
 So I decided to reload Debian without installing Home Assistant and tried to install Hybris. Technically, I managed to run a SAP commerce product (a fancy platform) on the cheap entertainment system(US$25) - it is kind of you are owning a Rolls Royce but park it in a motel garage. That means this experiment should be considered as a hobby, to see how much my work can survive in different habitats. We have seen that all enterprise server-side software is hosted on x86(32 and 64) CPU architecture. On the other hand, coding on ARM computers (such as Apple Silicon, Microsoft SQx...) has been progressing relatively slowly.
 
 To start Hybris on this tv box, application server would take 30 mins to be up from minimal extensions setup. Of course we cannot expect it to run as fast as a real computer because it is originally designed to run Android TV system, surviving from 5V power without any heat fan. But please SAP, it would be great if you can collborate with an ARM chip manufacturer to make your own SOC design. I can imagine that one day a ray of 10 tv boxes sitting on the desk can be run as well as SAP commerce cloud CCV2 development enviroments. They would not be as expensive as Azure cloud, wouldn't occupy much space, would work silently, and could be easily scaled up by adding real and cheap devices.
@@ -22,7 +25,7 @@ From above conditions we can choose the below SOCs:
 |Gen 3||X905X3||
 |Gen 4||X905X4||
 
-Afaik, if you tv box is one of the brands below, you probably can go ahead:
+Afaik, if your tv box is one of the brands below, you probably can go ahead:
 - H96
 - X96
 - Tanix
@@ -42,7 +45,7 @@ You might wonder why Armbian has such a huge community, but I chose the devmfc g
   
   ## Software
   ### 1. Get OS installation done
-  Get your installation finish from devfmc or Armbian. From my experience, I would like to bring up some important points: 
+  Get your installation ready from devfmc or Armbian. From my experience, I would like to bring up some important points: 
   > - Installing on SDcard or USB drive should be better than internal storage (eMMC) because you do not need to erase Android on the tvbox - your setup can be plug and play whenever you want. However, running on external storages means sacrificing the performance.
   > - Choosing right external storage is also very important because SoC have some kernel limitations. I also shared 1 topic to help others choose right accessories https://github.com/devmfc/debian-on-amlogic/discussions/48
   > - To boot externally, you have to enter recovery mode. Some devices hide the reset button in the output jack. My Tanix W2 has that button inside the 3.5 video/audio plug.
@@ -60,11 +63,11 @@ You might wonder why Armbian has such a huge community, but I chose the devmfc g
   ### 5. Install terminal to access via SSH
   - Install Putty if you are on Windows.
   ### 6. Make sure you can access through SSH
-  You have to know the ip to access SSH tunnel.
+  You have to know the ip to access SSH tunnel, there are few ways to achieve that:
   - In some devices, they will show the ip-temperature-time intervally. Since my client is 192.168.1.21 I know 220 abbreviates for tv box 192.168.1.220<br/>
     ![image](https://github.com/ductm208/hybris-on-tvbox/assets/4532530/060b4b68-9828-49d9-9306-a6690dd74a64)
-  - You can plug HDMI to any screen to get the ip - make sure this port plugged before tv box is powered.
-  - Go to router to check allocated ips. Some router is showing as tvbox in hostname. (Image below from Google)<br/>
+  - Or you can plug HDMI to any screen to get the ip - make sure this port plugged before tv box is powered.
+  - Or epon router admin page to check allocated ips. Some router is showing as tvbox in hostname. (Image below from Google)<br/>
     ![image](https://github.com/ductm208/hybris-on-tvbox/assets/4532530/fd843e8c-ff23-46c7-99a2-703e4d763ca1)
 
     
@@ -84,7 +87,7 @@ You might wonder why Armbian has such a huge community, but I chose the devmfc g
 
     
 # Hybris Installation
-> If you are the *nix family users (Unix, Linux, MacOS) you might not required to follow exactly my instructions below. However there is a wrapper issue would be arisen when you try to start hybris server. If this happens, please search for the wrapper hacks section.
+> If you are the *nix family users (Unix, Linux, MacOS) you might not require to follow exactly my instructions below. However there is a wrapper issue would be occured when you try to start hybris server. If this happens, please search for the wrapper hacks section.
 
 ## Install Java JDK 17
 At SSH using root account, enter:<br/>
@@ -139,7 +142,7 @@ Run this command, "README, SIGNATURE.SMF..." should be located in hybris app<br/
 ![image](https://github.com/ductm208/hybris-on-tvbox/assets/4532530/d6f64a0d-06d4-4d84-b41c-9033c3e8f19d)
 
 ## Compile + intialize + run the system
-Now we can do all stuffs as normal SAP Hybris commerce consultant do except small hack from wrapper. HYBRIS_HOME is /home/hybris/hybrisapp/hybris
+Now we can do all stuffs as normal SAP Hybris commerce consultants do except small hack from wrapper. HYBRIS_HOME is /home/hybris/hybrisapp/hybris
 ### Compile the package
 Set ant environment values<br/>
 `hybris@tvbox:~/hybrisapp/hybris/bin/platform$ . ./setantenv.sh`<br/><br/>
@@ -159,7 +162,7 @@ Run ant clean all again, my tv box took 24 minutes to finish building<br/>
 `hybris@tvbox:~/hybrisapp/hybris/bin/platform$ ant clean all`<br/>
 ![image](https://github.com/ductm208/hybris-on-tvbox/assets/4532530/f9a1e568-3329-43e0-b6b7-b138139953a4)<br/><br/>
 
-Now you can run ant initialize and make some :coffee: 😄, it would take 1-2hrs to complete - actually not bad because Thinkpad P1 which installed Ubuntu takes 10 minutes for the same task<br/>
+Now you can run ant initialize and make some :coffee: 😄, it would take 1-2hrs to complete - actually not bad because my Thinkpad P1 which installed Ubuntu takes 10 minutes for the same task<br/>
 `hybris@tvbox:~/hybrisapp/hybris/bin/platform$ ant initialize`<br/>
 
 ## Start the server
@@ -173,7 +176,7 @@ Type the command below we will see: The wrappers for Linux are around for differ
 
 In fact, aarch64 is arm-64. We need to help the script route to arm-64 by making the symbolic link. At /home/hybris/hybrisapp/hybris/bin/platform/tomcat/bin type: <br/>
 `hybris@tvbox:~/hybrisapp/hybris/bin/platform/tomcat/bin$ ln -s wrapper-linux-arm-64 wrapper-linux-aarch64-` <br/>
-**Be careful, wrapper-linux-aarch64- is ending with dash (-).**. Check again with different command.
+**Be careful, wrapper-linux-aarch64- is ending with hyphen (-).**. Check again with different command.
 `hybris@tvbox:~/hybrisapp/hybris/bin/platform/tomcat/bin$ ls -l | grep wrapper`<br/>
 You will see the symbolic link created and it is actually wrapper-linux-arm-64
 
@@ -191,5 +194,5 @@ It will show aarch64 is taken, and takes around 30 minutes to start.<br/>
 ![image](https://github.com/ductm208/hybris-on-tvbox/assets/4532530/2c95271c-6ba8-46b3-a23c-7ed3d8a81399)<br/><br/>
 
 You can check the storefront from the url: https://192.168.1.220:9002/yacceleratorstorefront/?site=electronics<br>
-And backoffice too: https://192.168.1.220:9002<br>
+And backoffice too: https://192.168.1.220:9002/backoffice<br>
 Surprisingly, once server is ready the platform will run well, not slow as I thought.
